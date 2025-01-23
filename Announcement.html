@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Announcement System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f6fa;
+            --text-color: #2d3436;
+            --border-radius: 10px;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 2rem;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            margin: 0.2rem 0;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 2rem;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .announcement-card {
+            background: white;
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+            margin-bottom: 1rem;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-badge {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .interaction-btn {
+            background: none;
+            border: none;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .interaction-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .calendar-widget {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .new-announcement-btn {
+            background-color: #4a90e2; /* Custom blue color */
+            color: white;
+            border-radius: 8px;
+        }
+        .new-announcement-btn:hover {
+            background-color: #357ab7; /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar col-md-3 col-lg-2">
+        <div class="profile-section">
+            <img src="https://t3.ftcdn.net/jpg/05/56/29/10/360_F_556291020_q2ieMiOCKYbtoLITrnt7qcSL1LJYyWrU.jpg" alt="Admin Profile" class="profile-image">
+            <h6 class="mb-0">Admin User</h6>
+            <small class="text-muted">System Administrator</small>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="admin.html"><i class="fas fa-home me-2"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="Announcement.html"><i class="fas fa-bullhorn me-2"></i> Announcements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="bookmark.html"><i class="fas fa-bookmark me-2"></i> Bookmarks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="calendar.html"><i class="fas fa-calendar me-2"></i> Calendar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Setting.html"><i class="fas fa-cog me-2"></i> Settings</a>
+            </li>
+			<li class="nav-item">
+				<a class="nav-link" href="logout.html"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+			</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>Announcements Management</h2>
+                    <p class="text-muted">Create, manage, and track your system announcements.</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="search-box">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" id="search-bar" class="form-control" placeholder="Search announcements...">
+                            </div>
+                            <div class="col-md-2">
+                                <select id="category-filter" class="form-select">
+                                    <option value="all">All Categories</option>
+                                    <option value="Important">Important</option>
+                                    <option value="Event">Event</option>
+                                    <option value="Reminder">Reminder</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="date-filter" class="form-select">
+                                    <option value="all">All Dates</option>
+                                    <option value="today">Today</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                </select>
+                            </div>
+            <div class="mb-4">
+                <button class="btn btn-primary" id="create-announcement-btn">Create New Announcement</button>
+            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<!-- Announcements List -->
+<div class="row" id="announcement-list">
+    <div class="col-12">
+        <!-- Announcement 1 -->
+        <div class="card announcement-card" data-category="Important" data-date="2 hours ago">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary">Important</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">System Maintenance Notice</h5>
+                <p class="card-text">Scheduled maintenance will be performed on the system this weekend...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: 2 hours ago</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement 2 -->
+        <div class="card announcement-card" data-category="Event" data-date="Yesterday">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-success bg-opacity-10 text-success">Event</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">Team Building Event</h5>
+                <p class="card-text">Join us for the annual team building event next month...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: Yesterday</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement 3 -->
+        <div class="card announcement-card" data-category="General" data-date="1 day ago">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-warning bg-opacity-10 text-warning">General</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">New HR Policies</h5>
+                <p class="card-text">The HR department has updated the company's leave policies...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: 1 day ago</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement 4 -->
+        <div class="card announcement-card" data-category="Reminder" data-date="3 days ago">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-info bg-opacity-10 text-info">Reminder</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">Monthly Performance Review</h5>
+                <p class="card-text">Please remember to submit your performance reviews by the end of this week...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: 3 days ago</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement 5 -->
+        <div class="card announcement-card" data-category="Notice" data-date="1 week ago">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-danger bg-opacity-10 text-danger">Notice</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">Office Closure Announcement</h5>
+                <p class="card-text">The office will be closed on Friday for a public holiday...</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: 1 week ago</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcement 6 -->
+        <div class="card announcement-card" data-category="Event" data-date="1 month ago">
+            <div class="card-body">
+                <div class="announcement-actions mb-2">
+                    <span class="badge bg-success bg-opacity-10 text-success">Event</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary me-2">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <h5 class="card-title">Annual Conference 2025</h5>
+                <p class="card-text">Our annual conference will be held in August 2025. Save the date!</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Created: 1 month ago</small>
+                    <button class="btn btn-sm btn-primary">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Announcements navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+// Function to handle the Edit button
+function editAnnouncement(announcementTitle) {
+    // Create the input fields dynamically
+    Swal.fire({
+        title: 'Edit Announcement',
+        html: `
+            <input id="edit-announcement-title" class="swal2-input" placeholder="Title" value="${announcementTitle}">
+            <textarea id="edit-announcement-description" class="swal2-textarea" placeholder="Description"></textarea>
+            <select id="edit-announcement-category" class="swal2-select">
+                <option value="Important">Important</option>
+                <option value="Event">Event</option>
+                <option value="Reminder">Reminder</option>
+                <option value="General">General</option>
+            </select>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Update Announcement',
+        cancelButtonText: 'Cancel',
+        preConfirm: () => {
+            const title = document.getElementById('edit-announcement-title').value;
+            const description = document.getElementById('edit-announcement-description').value;
+            const category = document.getElementById('edit-announcement-category').value;
+
+            if (!title || !description || !category) {
+                Swal.showValidationMessage('Please fill in all fields');
+                return false;  // prevent form submission
+            }
+
+            return { title, description, category };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const { title, description, category } = result.value;
+
+            // Handle the updated announcement (for example, update the DOM)
+            Swal.fire(
+                'Announcement Updated!',
+                `New Title: ${title}\nNew Category: ${category}\nNew Description: ${description}`,
+                'success'
+            );
+
+            // You can implement the logic to update the announcement in the list.
+            console.log(`Updated Announcement: ${title}, ${category}, ${description}`);
+            // Example: Update the title and description in the DOM dynamically
+            // You would need to find the specific announcement card and update its content.
+        }
+    });
+}
+
+
+// Function to handle the Delete button
+function deleteAnnouncement(announcementTitle) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to recover this announcement!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true // Moves the Cancel button to the left
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Perform the delete action (e.g., remove the announcement from the DOM or send an API request)
+            console.log('Announcement deleted:', announcementTitle);
+            // Example: document.querySelector(`#announcement-${announcementTitle}`).remove();
+            Swal.fire(
+                'Deleted!',
+                'Your announcement has been deleted.',
+                'success'
+            );
+        }
+    });
+}
+
+    // Function to handle the View Details button
+    function viewDetails(announcementTitle, announcementDescription) {
+        Swal.fire({
+            title: announcementTitle,
+            text: announcementDescription,
+            icon: 'info',
+            showCloseButton: true
+        });
+    }
+
+    // Add event listeners to action buttons
+    document.querySelectorAll('.announcement-card').forEach(card => {
+        const editBtn = card.querySelector('.btn-outline-secondary');
+        const deleteBtn = card.querySelector('.btn-outline-danger');
+        const viewBtn = card.querySelector('.btn-primary');
+        const title = card.querySelector('.card-title').textContent;
+        const description = card.querySelector('.card-text').textContent;
+
+        // Edit button event
+        editBtn.addEventListener('click', () => editAnnouncement(title));
+
+        // Delete button event
+        deleteBtn.addEventListener('click', () => deleteAnnouncement(title));
+
+        // View Details button event
+        viewBtn.addEventListener('click', () => viewDetails(title, description));
+    });
+        // Filter and Search functionality
+        const searchBar = document.getElementById('search-bar');
+        const categoryFilter = document.getElementById('category-filter');
+        const dateFilter = document.getElementById('date-filter');
+        const announcementList = document.getElementById('announcement-list');
+
+        function filterAnnouncements() {
+            const searchValue = searchBar.value.toLowerCase();
+            const categoryValue = categoryFilter.value;
+            const dateValue = dateFilter.value;
+
+            const announcements = announcementList.querySelectorAll('.announcement-card');
+            announcements.forEach(announcement => {
+                const title = announcement.querySelector('.card-title').textContent.toLowerCase();
+                const category = announcement.getAttribute('data-category');
+                const date = new Date(announcement.getAttribute('data-date'));
+
+                const matchesSearch = title.includes(searchValue);
+                const matchesCategory = categoryValue === 'all' || category === categoryValue;
+                const matchesDate = filterByDate(date, dateValue);
+
+                if (matchesSearch && matchesCategory && matchesDate) {
+                    announcement.style.display = '';
+                } else {
+                    announcement.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByDate(date, filter) {
+            const now = new Date();
+            if (filter === 'today') {
+                return date.toDateString() === now.toDateString();
+            } else if (filter === 'week') {
+                const startOfWeek = new Date();
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                return date >= startOfWeek && date <= now;
+            } else if (filter === 'month') {
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            }
+            return true;
+        }
+
+        // Event listeners for search/filter changes
+        searchBar.addEventListener('input', filterAnnouncements);
+        categoryFilter.addEventListener('change', filterAnnouncements);
+        dateFilter.addEventListener('change', filterAnnouncements);
+			       // Function to handle the "Create New Announcement" SweetAlert form
+        document.getElementById('create-announcement-btn').addEventListener('click', function() {
+            Swal.fire({
+                title: 'Create New Announcement',
+                html: `
+                    <input id="announcement-title" class="swal2-input" placeholder="Title">
+                    <textarea id="announcement-description" class="swal2-textarea" placeholder="Description"></textarea>
+                    <select id="announcement-category" class="swal2-select">
+                        <option value="Important">Important</option>
+                        <option value="Event">Event</option>
+                        <option value="Reminder">Reminder</option>
+                        <option value="General">General</option>
+                    </select>
+                `,
+                focusConfirm: false,
+                showCancelButton: true,
+                confirmButtonText: 'Create Announcement',
+                cancelButtonText: 'Cancel',
+                preConfirm: () => {
+                    const title = document.getElementById('announcement-title').value;
+                    const description = document.getElementById('announcement-description').value;
+                    const category = document.getElementById('announcement-category').value;
+
+                    if (!title || !description || !category) {
+                        Swal.showValidationMessage('Please fill in all fields');
+                        return false;  // prevent form submission
+                    }
+                    return { title, description, category };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { title, description, category } = result.value;
+
+                    // Example of how to handle the new announcement
+                    Swal.fire(
+                        'Announcement Created!',
+                        `Title: ${title}\nCategory: ${category}\nDescription: ${description}`,
+                        'success'
+                    );
+
+                    // You can add the new announcement dynamically to the list (in this case, just logs it)
+                    console.log(`New Announcement: ${title}, ${category}, ${description}`);
+                    // You can also dynamically add the announcement to your page if desired
+                }
+            });
+        });
+		
+					  document.addEventListener('contextmenu', function(e) {
+				e.preventDefault();
+			  });
+
+			  document.addEventListener('keydown', function(e) {
+				if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+				  e.preventDefault();
+				}
+				if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+				  e.preventDefault();
+				}
+				if (e.keyCode === 123) {
+				  e.preventDefault();
+				}
+			  });
+    </script>
+</body>
+</html>

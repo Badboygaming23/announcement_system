@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Announcement System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f6fa;
+            --text-color: #2d3436;
+            --border-radius: 10px;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 2rem;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-color);
+            padding: 0.8rem 1rem;
+            margin: 0.2rem 0;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 2rem;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .announcement-card {
+            background: white;
+            border-radius: var(--border-radius);
+            transition: transform 0.3s ease;
+            margin-bottom: 1rem;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .announcement-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-badge {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+        }
+
+        .interaction-btn {
+            background: none;
+            border: none;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .interaction-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .calendar-widget {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-section {
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar col-md-3 col-lg-2">
+        <div class="profile-section">
+            <img src="https://t3.ftcdn.net/jpg/05/56/29/10/360_F_556291020_q2ieMiOCKYbtoLITrnt7qcSL1LJYyWrU.jpg" alt="Admin Profile" class="profile-image">
+            <h6 class="mb-0">Admin User</h6>
+            <small class="text-muted">System Administrator</small>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="admin.html"><i class="fas fa-home me-2"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Announcement.html"><i class="fas fa-bullhorn me-2"></i> Announcements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Bookmark.html"><i class="fas fa-bookmark me-2"></i> Bookmarks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Calendar.html"><i class="fas fa-calendar me-2"></i> Calendar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Setting.html"><i class="fas fa-cog me-2"></i> Settings</a>
+            </li>
+			<li class="nav-item">
+				<a class="nav-link" href="logout.html"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+			</li>
+        </ul>
+    </div>
+
+			<!-- Main Content -->
+			<div class="main-content">
+				<div class="container-fluid">
+					<!-- Header -->
+					<div class="row mb-4">
+						<div class="col">
+							<h2>Welcome Back, Admin!</h2>
+							<p class="text-muted">Here's what's happening in your announcement system.</p>
+						</div>
+					</div>
+		<!-- Search and Filter Section -->
+		<div class="row mb-4">
+			<div class="col-12">
+				<div class="search-box">
+					<div class="row g-3">
+						<div class="col-md-6">
+							<input type="text" id="search-bar" class="form-control" placeholder="Search announcements...">
+						</div>
+						<div class="col-md-2">
+							<select id="category-filter" class="form-select">
+								<option value="all">All Categories</option>
+								<option value="Important">Important</option>
+								<option value="Event">Event</option>
+								<option value="Reminder">Reminder</option>
+								<option value="General">General</option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<select id="date-filter" class="form-select">
+								<option value="all">All Dates</option>
+								<option value="today">Today</option>
+								<option value="week">This Week</option>
+								<option value="month">This Month</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+							<div class="row" id="announcement-list">
+				<div class="col-lg-8">
+					<h4 class="mb-3">Recent Announcements</h4>
+
+					<!-- Announcement 1 -->
+					<div class="card announcement-card" data-category="Important" data-date="today">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-primary bg-opacity-10 text-primary">Important</span>
+								<small class="text-muted">2 hours ago</small>
+							</div>
+							<h5 class="card-title">System Maintenance Notice</h5>
+							<p class="card-text">Scheduled maintenance will be performed on the system this weekend...</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">24</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 8
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Announcement 2 -->
+					<div class="card announcement-card" data-category="Event" data-date="week">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-success bg-opacity-10 text-success">Event</span>
+								<small class="text-muted">Yesterday</small>
+							</div>
+							<h5 class="card-title">Team Building Event</h5>
+							<p class="card-text">Join us for the annual team building event next month...</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">45</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 12
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Announcement 3 -->
+					<div class="card announcement-card" data-category="General" data-date="day">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-warning bg-opacity-10 text-warning">General</span>
+								<small class="text-muted">1 day ago</small>
+							</div>
+							<h5 class="card-title">New HR Policies</h5>
+							<p class="card-text">The HR department has updated the company's leave policies...</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">10</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 5
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Announcement 4 -->
+					<div class="card announcement-card" data-category="Reminder" data-date="week">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-info bg-opacity-10 text-info">Reminder</span>
+								<small class="text-muted">3 days ago</small>
+							</div>
+							<h5 class="card-title">Monthly Performance Review</h5>
+							<p class="card-text">Please remember to submit your performance reviews by the end of this week...</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">15</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 3
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Announcement 5 -->
+					<div class="card announcement-card" data-category="Notice" data-date="week">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-danger bg-opacity-10 text-danger">Notice</span>
+								<small class="text-muted">1 week ago</small>
+							</div>
+							<h5 class="card-title">Office Closure Announcement</h5>
+							<p class="card-text">The office will be closed on Friday for a public holiday...</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">30</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 6
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Announcement 6 -->
+					<div class="card announcement-card" data-category="Event" data-date="month">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-center mb-2">
+								<span class="category-badge bg-success bg-opacity-10 text-success">Event</span>
+								<small class="text-muted">1 month ago</small>
+							</div>
+							<h5 class="card-title">Annual Conference 2025</h5>
+							<p class="card-text">Our annual conference will be held in August 2025. Save the date!</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<button class="interaction-btn me-3 like-btn">
+										<i class="far fa-thumbs-up me-1"></i> <span class="like-count">50</span>
+									</button>
+									<button class="interaction-btn me-3 comment-btn">
+										<i class="far fa-comment me-1"></i> 20
+									</button>
+									<button class="interaction-btn bookmark-btn">
+										<i class="far fa-bookmark"></i>
+									</button>
+								</div>
+								<button class="btn btn-light btn-sm">Read More</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+                <div class="col-lg-4">
+                    <div class="calendar-widget mb-4">
+                        <h5 class="mb-3">Upcoming Events</h5>
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Team Meeting</h6>
+                                    <small>Tomorrow</small>
+                                </div>
+                                <small class="text-muted">10:00 AM - 11:30 AM</small>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Project Deadline</h6>
+                                    <small>3 days</small>
+                                </div>
+                                <small class="text-muted">All day event</small>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Quick Stats</h5>
+                            <div class="d-flex justify-content-between mb-3">
+                                <div>
+                                    <h6 class="mb-1">Total Announcements</h6>
+                                    <h3 class="mb-0">6</h3>
+                                </div>
+                                <div class="text-end">
+                                    <h6 class="mb-1">Active Users</h6>
+                                    <h3 class="mb-0">1.2k</h3>
+                                </div>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" role="progressbar" style="width: 6%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const likeCountElement = this.querySelector('.like-count');
+                let currentLikes = parseInt(likeCountElement.textContent);
+                likeCountElement.textContent = currentLikes + 1;
+            });
+        });
+
+        document.querySelectorAll('.comment-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                Swal.fire({
+                    title: 'Post Your Comment',
+                    input: 'textarea',
+                    inputPlaceholder: 'Write your comment here...',
+                    showCancelButton: true,
+                    confirmButtonText: 'Post Comment',
+                    cancelButtonText: 'Cancel',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (comment) => {
+                        if (!comment) {
+                            Swal.showValidationMessage('Please write a comment!');
+                            return false;
+                        }
+                        return comment; 
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Comment Posted!',
+                            'Your comment has been successfully posted.',
+                            'success'
+                        );
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.bookmark-btn').forEach(bookmark => {
+            bookmark.addEventListener('click', function () {
+                this.querySelector('i').classList.toggle('fas');
+                this.querySelector('i').classList.toggle('far');
+            });
+        });
+		
+		const searchBar = document.getElementById('search-bar');
+		const categoryFilter = document.getElementById('category-filter');
+		const dateFilter = document.getElementById('date-filter');
+		const announcementList = document.getElementById('announcement-list'); 
+
+		function filterAnnouncements() {
+			const searchValue = searchBar.value.toLowerCase();
+			const categoryValue = categoryFilter.value;
+			const dateValue = dateFilter.value;
+			
+			const announcements = announcementList.querySelectorAll('.announcement-card');
+			announcements.forEach(announcement => {
+				const title = announcement.querySelector('.card-title').textContent.toLowerCase();
+				const category = announcement.getAttribute('data-category');
+				const date = announcement.getAttribute('data-date');
+				
+				const matchesSearch = title.includes(searchValue);
+				const matchesCategory = categoryValue === 'all' || category === categoryValue;
+				const matchesDate = dateValue === 'all' || date === dateValue;
+				
+				if (matchesSearch && matchesCategory && matchesDate) {
+					announcement.style.display = '';
+				} else {
+					announcement.style.display = 'none';
+				}
+			});
+		}
+
+		// Event listeners for search/filter changes
+		searchBar.addEventListener('input', filterAnnouncements);
+		categoryFilter.addEventListener('change', filterAnnouncements);
+		dateFilter.addEventListener('change', filterAnnouncements);
+					  document.addEventListener('contextmenu', function(e) {
+				e.preventDefault();
+			  });
+
+			  document.addEventListener('keydown', function(e) {
+				if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+				  e.preventDefault();
+				}
+				if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+				  e.preventDefault();
+				}
+				if (e.keyCode === 123) {
+				  e.preventDefault();
+				}
+			  });
+    </script>
+</body>
+
+</html>
