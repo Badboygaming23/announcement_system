@@ -102,9 +102,18 @@
             border-radius: 50%;
             margin-bottom: 1rem;
         }
+		      .mobile-message {
+        display: none;
+        font-size: 20px;
+        color: red;
+        text-align: center;
+        margin-top: 20px;
+      }
     </style>
 </head>
 <body>
+		<div class="mobile-message" id="mobile-message">This site is not optimized for mobile devices. Please visit us on a desktop.</div>
+		
     <!-- Sidebar -->
     <div class="sidebar col-md-3 col-lg-2">
         <div class="profile-section">
@@ -268,6 +277,18 @@
 				  e.preventDefault();
 				}
 			  });
+			        function checkDeviceWidth() {
+        if (window.innerWidth < 768) {
+          document.querySelector(".wrapper").style.display = "none";
+          document.getElementById("mobile-message").style.display = "block";
+        } else {
+          document.querySelector(".wrapper").style.display = "block";
+          document.getElementById("mobile-message").style.display = "none";
+        }
+      }
+
+      window.addEventListener('load', checkDeviceWidth);
+      window.addEventListener('resize', checkDeviceWidth);
     </script>
 </body>
 </html>

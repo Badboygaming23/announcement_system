@@ -240,7 +240,8 @@
         .password-strength-container {
             margin-top: 10px;
         }
-		      /* Your existing styles here */
+		
+				      /* Your existing styles here */
       .mobile-message {
         display: none;
         font-size: 20px;
@@ -254,11 +255,9 @@
           <div class="wave"></div>
         <div class="wave"></div>
         <div class="wave"></div>
-		    <!-- Mobile Message Section -->
-    <div class="mobile-message" id="mobile-message">
-      This site is not optimized for mobile devices. Please visit us on a desktop.
-    </div>
-	  
+		
+		<div class="mobile-message" id="mobile-message">This site is not optimized for mobile devices. Please visit us on a desktop.</div>
+		
     <section class="wrapper">
       <div class="form signup">
         <header>Signup</header>
@@ -351,21 +350,17 @@
 				  e.preventDefault();
 				}
 			  });
-
-	           // Detect if the user is on a mobile device
+			  
       function checkDeviceWidth() {
         if (window.innerWidth < 768) {
-          // Show the mobile message and hide the wrapper content
           document.querySelector(".wrapper").style.display = "none";
           document.getElementById("mobile-message").style.display = "block";
         } else {
-          // Show the wrapper content and hide the mobile message
           document.querySelector(".wrapper").style.display = "block";
           document.getElementById("mobile-message").style.display = "none";
         }
       }
 
-      // Run the check when the page loads and on resize
       window.addEventListener('load', checkDeviceWidth);
       window.addEventListener('resize', checkDeviceWidth);
     </script>
